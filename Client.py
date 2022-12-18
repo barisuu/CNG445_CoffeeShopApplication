@@ -115,16 +115,19 @@ class baristaPanel(Frame):
         cakeSelections = ""
         ordercoffeeSelections = ""
         ordercakeSelections = ""
+        isChecked=False
         if (self.discountCode.get()!=""):
             self.msg = "order;"+self.discountCode.get()+";"+self.baristaName
         elif(self.discountCode.get()==""):
             self.msg = "order;nodiscount;"+self.baristaName
         for coffee in self.coffees:
-            if coffee[1].get():
+            if coffee[1].get() and int(coffee[2].get())!=0:
+                isChecked=True
                 coffeeSelections+="\t" + coffee[0] + ": " + str(coffee[2].get()) + "\n"
                 ordercoffeeSelections +=";"+coffee[0] + "-" + str(coffee[2].get())
         for cake in self.cakes:
-            if cake[1].get():
+            if cake[1].get() and int(cake[2].get())!=0:
+                isChecked=True
                 cakeSelections +="\t" + cake[0] + ": " + str(cake[2].get()) + "\n"
                 if (cake[0] == "San Sebastian Cheesecake"):
                     ordercakeSelections += ";sansebastian" + "-" + str(cake[2].get())
@@ -132,11 +135,13 @@ class baristaPanel(Frame):
                     ordercakeSelections += ";mosaic" + "-" + str(cake[2].get())
                 elif(cake[0] == "Carrot Cake"):
                     ordercakeSelections += ";carrot" + "-" + str(cake[2].get())
-
-        messagebox.showinfo("Message", "Coffees:\n " + coffeeSelections + "\nCakes:\n" + cakeSelections)
-        self.msg += (ordercoffeeSelections + ordercakeSelections).lower()
-        self.response = networkBoot(self.msg)
-        messagebox.showinfo("Message", self.response)
+        if isChecked:
+            messagebox.showinfo("Message", "Coffees:\n " + coffeeSelections + "\nCakes:\n" + cakeSelections)
+            self.msg += (ordercoffeeSelections + ordercakeSelections).lower()
+            self.response = networkBoot(self.msg)
+            messagebox.showinfo("Message", self.response)
+        else:
+            messagebox.showinfo("Error", "No item selected or selected item is 0")
     def closePressed(self):
         self.quit()
         self.destroy()
